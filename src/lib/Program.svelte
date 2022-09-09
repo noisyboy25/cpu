@@ -1,13 +1,24 @@
 <script lang="ts">
-  type Command = { op: string; args: string[] };
+  import type { Command } from './cpu';
+
+  import { cpu } from './stores';
+
   let program = 'Hello world';
-  $: commands = program.split('\n').map(parseCommand);
+  let status;
+  let counter;
+
+  cpu.subscribe((value) => {
+    status = value.status;
+    counter = value.count;
+  });
+
+  $: commands = program.trim().split('\n').map(parseCommand);
 
   function parseCommand(line: string): Command {
     const words = line.split(' ');
-    const operator = words[0];
+    const op = words[0];
     const args = words.slice(1);
-    return { op: operator, args };
+    return { op, args };
   }
 </script>
 
@@ -26,6 +37,27 @@
     </tr>
   {/each}
 </table>
+
+<div>
+  <p>Count: {counter}</p>
+  <p>Status: {status}</p>
+</div>
+<button
+  on:click={() => {
+    cpu.update((value) => {
+      value.step();
+      return value;
+    });
+  }}>Step</button
+>
+<button
+  on:click={() => {
+    cpu.update((value) => {
+      value.reset();
+      return value;
+    });
+  }}>Reset</button
+>
 
 <style>
   .op {
