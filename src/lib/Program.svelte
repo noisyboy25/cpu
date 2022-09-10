@@ -83,9 +83,7 @@
   <p>Status: {status}</p>
   <p>Length: {programLength}</p>
 </div>
-{#if output}
-  <pre class="output">{output}</pre>
-{/if}
+<pre class="output">{output}</pre>
 
 <style>
   .input {
