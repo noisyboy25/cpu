@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { Status, type Command } from './cpu';
+  import { opCodes, Status, type Command } from './cpu';
 
   import { cpu } from './stores';
 
-  let programInput = 'Roses are red\nViolets are blue\nADD 1 2 3 4';
+  let programInput = 'ADD 5 6\nADD 5 -10\nSUB 10 2';
   let status: Status;
   let pc: number;
   let programLength: number;
@@ -11,6 +11,7 @@
   let maxMemory: number;
 
   let output = '';
+  let error = '';
 
   cpu.subscribe((value) => {
     status = value.status;
@@ -20,18 +21,6 @@
     maxMemory = value.maxMemory;
   });
 
-  $: commands = programInput
-    .trim()
-    .split('\n')
-    .filter((el) => el)
-    .map(parseCommand);
-
-  function parseCommand(line: string): Command {
-    const words = line.split(' ').filter((w) => w);
-    const op = words[0];
-    const args = words.slice(1);
-    return { op, args };
-  }
   function step() {
     cpu.update((value) => {
       const out = value.step();
@@ -39,19 +28,24 @@
       return value;
     });
   }
-  function loadProgram(program: Command[]) {
-    cpu.update((value) => {
-      value.loadProgram(program);
-      return value;
-    });
-    output = '';
+  function loadProgram() {
+    clearOutput();
+    try {
+      cpu.update((value) => {
+        value.loadProgram(programInput);
+        return value;
+      });
+    } catch (err) {
+      console.log(err);
+      error = err;
+    }
   }
   function reset() {
+    clearOutput();
     cpu.update((value) => {
       value.reset();
       return value;
     });
-    output = '';
   }
   function run() {
     while (status === Status.READY) {
@@ -59,17 +53,21 @@
     }
   }
   function clear() {
+    clearOutput();
     cpu.update((value) => {
-      value.loadProgram([]);
+      value.loadProgram('');
       return value;
     });
+  }
+  function clearOutput() {
     output = '';
+    error = '';
   }
 </script>
 
 <textarea class="input" bind:value={programInput} />
 <div>
-  <button on:click={() => loadProgram(commands)}>Load</button>
+  <button on:click={() => loadProgram()}>Load</button>
   <button on:click={() => run()}>Run</button>
   <button on:click={() => step()}>Step</button>
   <button on:click={() => reset()}>Reset</button>
@@ -79,7 +77,7 @@
   {#each loadedProgram as cmd}
     <tr>
       <td class="op">
-        {cmd.op}
+        {opCodes[cmd.op]}
       </td>
       {#each cmd.args as arg}
         <td class="arg">
@@ -96,6 +94,7 @@
   <p>Max memory: {maxMemory}</p>
   <p>PC: {pc}</p>
 </div>
+<pre class="error">{error}</pre>
 <pre class="output">{output}</pre>
 
 <style>
@@ -124,6 +123,16 @@
   }
   .info p {
     margin: 0;
+  }
+  .error {
+    margin: auto;
+    background-color: firebrick;
+    padding: 1em;
+    font-weight: bold;
+    border-radius: 8px;
+  }
+  .error:empty {
+    display: none;
   }
   .output {
     background: black;
