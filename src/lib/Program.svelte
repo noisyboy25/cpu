@@ -3,7 +3,7 @@
 
   import { cpu } from './stores';
 
-  let programInput = 'Roses are red\nViolets are blue';
+  let programInput = 'Roses are red\nViolets are blue\nADD 1 2 3 4';
   let status;
   let counter;
   let programLength;

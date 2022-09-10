@@ -40,10 +40,11 @@ export class Cpu {
     let output = `${this.count}: ${JSON.stringify(this.program[this.count])} `;
     switch (cmd.op.toUpperCase()) {
       case 'ADD':
-        output += `${cmd.args
+        const res = cmd.args
           .map((arg) => Number(arg))
           .filter((val) => val)
-          .reduce((acc, arg) => acc + arg)}`;
+          .reduce((acc, arg) => acc + arg, 0);
+        output += `${res}`;
         break;
       default:
         break;
