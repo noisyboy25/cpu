@@ -82,7 +82,7 @@
   >
 </div>
 <div class="loaded-commands">
-  <div class="row">
+  <div class="row head">
     <div>#</div>
     <div>OP</div>
     <div>Args</div>
@@ -137,6 +137,9 @@
   }
   .loaded-commands .row {
     display: contents;
+  }
+  .loaded-commands .head {
+    font-weight: bold;
   }
   .loaded-commands div {
     display: inline-block;
