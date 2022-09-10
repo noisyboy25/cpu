@@ -4,18 +4,20 @@
   import { cpu } from './stores';
 
   let programInput = 'Roses are red\nViolets are blue\nADD 1 2 3 4';
-  let status;
-  let counter;
-  let programLength;
-  let loadedProgram;
+  let status: Status;
+  let pc: number;
+  let programLength: number;
+  let loadedProgram: Command[];
+  let maxMemory: number;
 
   let output = '';
 
   cpu.subscribe((value) => {
     status = value.status;
-    counter = value.count;
-    programLength = value.program.length;
-    loadedProgram = value.program;
+    pc = value.pc;
+    programLength = value.cmem.length;
+    loadedProgram = value.cmem;
+    maxMemory = value.maxMemory;
   });
 
   $: commands = programInput
@@ -91,7 +93,8 @@
 <div class="info">
   <p>Status: {status}</p>
   <p>Length: {programLength}</p>
-  <p>Count: {counter}</p>
+  <p>Max memory: {maxMemory}</p>
+  <p>PC: {pc}</p>
 </div>
 <pre class="output">{output}</pre>
 

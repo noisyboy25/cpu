@@ -7,37 +7,44 @@ export enum Status {
 }
 
 export class Cpu {
-  program: Command[] = [];
-  count = 0;
+  readonly maxMemory = 3;
+  pc = 0;
+  cmem: Command[] = [];
+  dmem: number[] = [];
   status: Status = Status.READY;
 
   loadProgram(program: Command[]) {
-    this.program = program;
     this.reset();
+    if (program.length > this.maxMemory)
+      return console.log('Program memory overflow');
+    this.cmem = program;
+    console.log(this);
   }
 
   step(): string {
     let output = '';
     switch (true) {
-      case this.count < 0:
+      case this.pc < 0:
         this.status = Status.ERROR;
         break;
-      case this.count === this.program.length:
+      case this.pc === this.cmem.length:
         this.status = Status.DONE;
         break;
       default:
-        output = this.process(this.program[this.count]);
-        this.count++;
+        output = this.process(this.cmem[this.pc]);
+        this.pc++;
         break;
     }
     return output;
   }
+
   reset() {
-    this.count = 0;
+    this.pc = 0;
     this.status = Status.READY;
   }
+
   private process(cmd: Command): string {
-    let output = `${this.count}: ${JSON.stringify(this.program[this.count])} `;
+    let output = `${this.pc}: ${JSON.stringify(this.cmem[this.pc])} `;
     switch (cmd.op.toUpperCase()) {
       case 'ADD':
         const res = cmd.args
