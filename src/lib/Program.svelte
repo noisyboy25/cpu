@@ -65,7 +65,7 @@
   }
 </script>
 
-<textarea class="input" bind:value={programInput} />
+<textarea class="program-input" spellcheck="false" bind:value={programInput} />
 <div>
   <button on:click={() => loadProgram()}>Load</button>
   <button on:click={() => run()}>Run</button>
@@ -98,12 +98,14 @@
 <pre class="output">{output}</pre>
 
 <style>
-  .input {
+  .program-input {
     min-height: 7em;
     border-radius: 8px;
+    padding: 1em;
   }
   .commands {
     text-align: left;
+    padding: 0 1em;
   }
   .op {
     color: orange;
