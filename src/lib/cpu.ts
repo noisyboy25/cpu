@@ -26,9 +26,7 @@ export class Cpu {
         this.status = Status.DONE;
         break;
       default:
-        output = `${this.count}: ${JSON.stringify(this.program[this.count])} ${
-          this.status
-        }`;
+        output = this.process(this.program[this.count]);
         this.count++;
         break;
     }
@@ -37,5 +35,19 @@ export class Cpu {
   reset() {
     this.count = 0;
     this.status = Status.READY;
+  }
+  private process(cmd: Command): string {
+    let output = `${this.count}: ${JSON.stringify(this.program[this.count])} `;
+    switch (cmd.op.toUpperCase()) {
+      case 'ADD':
+        output += `${cmd.args
+          .map((arg) => Number(arg))
+          .filter((val) => val)
+          .reduce((acc, arg) => acc + arg)}`;
+        break;
+      default:
+        break;
+    }
+    return output;
   }
 }

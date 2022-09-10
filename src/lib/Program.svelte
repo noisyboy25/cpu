@@ -3,10 +3,11 @@
 
   import { cpu } from './stores';
 
-  let program = 'Roses are red\nViolets are blue';
+  let programInput = 'Roses are red\nViolets are blue';
   let status;
   let counter;
   let programLength;
+  let loadedProgram;
 
   let output = '';
 
@@ -14,9 +15,10 @@
     status = value.status;
     counter = value.count;
     programLength = value.program.length;
+    loadedProgram = value.program;
   });
 
-  $: commands = program
+  $: commands = programInput
     .trim()
     .split('\n')
     .filter((el) => el)
@@ -54,17 +56,25 @@
       step();
     }
   }
+  function clear() {
+    cpu.update((value) => {
+      value.loadProgram([]);
+      return value;
+    });
+    output = '';
+  }
 </script>
 
-<textarea class="input" bind:value={program} />
+<textarea class="input" bind:value={programInput} />
 <div>
   <button on:click={() => loadProgram(commands)}>Load</button>
   <button on:click={() => run()}>Run</button>
   <button on:click={() => step()}>Step</button>
   <button on:click={() => reset()}>Reset</button>
+  <button on:click={() => clear()}>Clear</button>
 </div>
 <table class="commands">
-  {#each commands as cmd}
+  {#each loadedProgram as cmd}
     <tr>
       <td class="op">
         {cmd.op}
@@ -92,7 +102,6 @@
   }
   .commands {
     text-align: left;
-    display: none;
   }
   .op {
     color: orange;
