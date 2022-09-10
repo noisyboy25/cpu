@@ -23,7 +23,7 @@ export class Cpu {
       throw new Error(`Invalid op code at line (${index}): ${words[0]}`);
     const args = words.slice(1).map((word) => Number(word));
     if (args.length != 2)
-      throw new Error(`Invalid args length at line (${index}): ${line}`);
+      throw new Error(`Invalid args length at line (${index + 1}): ${line}`);
     console.log(op, args);
     return { op, args };
   }
