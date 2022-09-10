@@ -58,10 +58,10 @@
 
 <textarea class="input" bind:value={program} />
 <div>
-  <button on:click={() => step()}>Step</button>
   <button on:click={() => loadProgram(commands)}>Load</button>
-  <button on:click={() => reset()}>Reset</button>
   <button on:click={() => run()}>Run</button>
+  <button on:click={() => step()}>Step</button>
+  <button on:click={() => reset()}>Reset</button>
 </div>
 <table class="commands">
   {#each commands as cmd}
@@ -79,19 +79,20 @@
 </table>
 
 <div class="info">
-  <p>Count: {counter}</p>
   <p>Status: {status}</p>
   <p>Length: {programLength}</p>
+  <p>Count: {counter}</p>
 </div>
 <pre class="output">{output}</pre>
 
 <style>
   .input {
-    width: 100%;
-    min-height: 20vh;
+    min-height: 7em;
+    border-radius: 8px;
   }
   .commands {
     text-align: left;
+    display: none;
   }
   .op {
     color: orange;
@@ -117,5 +118,8 @@
     text-align: left;
     padding: 1em;
     border-radius: 8px;
+    overflow: scroll;
+    height: 100%;
+    font-size: 14px;
   }
 </style>
