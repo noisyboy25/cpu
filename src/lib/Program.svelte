@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { opCodes, Status, type Command } from './cpu';
+  import { Cpu, opCodes, Status, type Command } from './cpu';
 
   import { cpu } from './stores';
 
@@ -81,27 +81,27 @@
     }}>Hint</button
   >
 </div>
-<table class="loaded-commands">
-  <thead>
-    <tr>
-      <th>#</th>
-      <th>OP</th>
-    </tr>
-  </thead>
+<div class="loaded-commands">
+  <div class="row">
+    <div>#</div>
+    <div>OP</div>
+    <div>Args</div>
+    <div />
+  </div>
   {#each loadedProgram as cmd, i}
-    <tr>
-      <td>{i}</td>
-      <td class="op">
+    <div class="row" class:active={status != Status.DONE && i === pc - 1}>
+      <div>{i}</div>
+      <div class="op">
         {opCodes[cmd.op]}
-      </td>
+      </div>
       {#each cmd.args as arg}
-        <td class="arg">
+        <div class="arg">
           {arg}
-        </td>
+        </div>
       {/each}
-    </tr>
+    </div>
   {/each}
-</table>
+</div>
 
 <div class="info">
   <p>Status: {status}</p>
@@ -118,7 +118,10 @@
 {/if}
 
 <style>
-  button.active {
+  .active {
+    background-color: #333;
+  }
+  .active > div {
     background-color: #333;
   }
   .program-input {
@@ -127,20 +130,23 @@
     padding: 1em;
   }
   .loaded-commands {
+    display: grid;
+    grid-template-columns: 5ch 5ch 1fr 1fr;
     text-align: left;
     padding: 0 1em;
+  }
+  .loaded-commands .row {
+    display: contents;
+  }
+  .loaded-commands div {
+    display: inline-block;
+    text-align: center;
   }
   .op {
     color: orange;
   }
   .arg {
     color: lightyellow;
-  }
-  .arg::before {
-    content: '[';
-  }
-  .arg::after {
-    content: ']';
   }
   .info {
     padding: 1em;
