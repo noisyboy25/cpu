@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Command } from './cpu';
+  import { Status, type Command } from './cpu';
 
   import { cpu } from './stores';
 
@@ -30,7 +30,8 @@
   }
   function step() {
     cpu.update((value) => {
-      output += value.step();
+      const out = value.step();
+      if (out) output += `${out}\n`;
       return value;
     });
   }
@@ -48,12 +49,18 @@
     });
     output = '';
   }
+  function run() {
+    while (status === Status.READY) {
+      step();
+    }
+  }
 </script>
 
 <textarea bind:value={program} />
 <button on:click={() => step()}>Step</button>
 <button on:click={() => loadProgram(commands)}>Load</button>
 <button on:click={() => reset()}>Reset</button>
+<button on:click={() => run()}>Run</button>
 <table>
   {#each commands as cmd}
     <tr>
@@ -74,7 +81,7 @@
   <p>Status: {status}</p>
   <p>Length: {programLength}</p>
 </div>
-<p>{output}</p>
+<pre>{output}</pre>
 
 <style>
   .op {

@@ -1,6 +1,6 @@
 export type Command = { op: string; args: string[] };
 
-enum Status {
+export enum Status {
   READY = 'Ready',
   ERROR = 'Error',
   DONE = 'Done',
