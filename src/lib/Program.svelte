@@ -13,6 +13,8 @@
   let output = '';
   let error = '';
 
+  let hint = false;
+
   cpu.subscribe((value) => {
     status = value.status;
     pc = value.pc;
@@ -72,6 +74,12 @@
   <button on:click={() => step()}>Step</button>
   <button on:click={() => reset()}>Reset</button>
   <button on:click={() => clear()}>Clear</button>
+  <button
+    class:active={hint}
+    on:click={() => {
+      hint = !hint;
+    }}>Hint</button
+  >
 </div>
 <table class="commands">
   {#each loadedProgram as cmd}
@@ -95,9 +103,18 @@
   <p>PC: {pc}</p>
 </div>
 <pre class="error">{error}</pre>
-<pre class="output">{output}</pre>
+{#if !hint}
+  <pre class="output">{output}</pre>
+{:else}
+  <div class="op-list">
+    {#each opCodes as op, i} <p>{i}: {op}</p> {/each}
+  </div>
+{/if}
 
 <style>
+  button.active {
+    background-color: #333;
+  }
   .program-input {
     min-height: 7em;
     border-radius: 8px;
@@ -120,7 +137,7 @@
     content: ']';
   }
   .info {
-    margin: 1em;
+    padding: 1em;
     text-align: left;
   }
   .info p {
@@ -137,6 +154,7 @@
     display: none;
   }
   .output {
+    margin: 0;
     background: black;
     text-align: left;
     padding: 1em;
@@ -144,5 +162,13 @@
     overflow: scroll;
     height: 100%;
     font-size: 14px;
+  }
+  .op-list {
+    margin: 0;
+    padding: 1em;
+    text-align: left;
+    background-color: #333;
+    border-radius: 8px;
+    height: 100%;
   }
 </style>
