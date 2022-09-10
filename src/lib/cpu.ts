@@ -16,19 +16,23 @@ export class Cpu {
     this.reset();
   }
 
-  step() {
-    console.log('tick', this.count, this.program[this.count], this.status);
-
-    if (this.count < 0) {
-      this.status = Status.ERROR;
-      return;
+  step(): string {
+    let output = '';
+    switch (true) {
+      case this.count < 0:
+        this.status = Status.ERROR;
+        break;
+      case this.count === this.program.length:
+        this.status = Status.DONE;
+        break;
+      default:
+        output = `${this.count}: ${JSON.stringify(this.program[this.count])} ${
+          this.status
+        }`;
+        this.count++;
+        break;
     }
-    if (this.count === this.program.length) {
-      this.status = Status.DONE;
-      return;
-    }
-
-    this.count++;
+    return output;
   }
   reset() {
     this.count = 0;
