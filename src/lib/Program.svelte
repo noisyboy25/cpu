@@ -81,9 +81,16 @@
     }}>Hint</button
   >
 </div>
-<table class="commands">
-  {#each loadedProgram as cmd}
+<table class="loaded-commands">
+  <thead>
     <tr>
+      <th>#</th>
+      <th>OP</th>
+    </tr>
+  </thead>
+  {#each loadedProgram as cmd, i}
+    <tr>
+      <td>{i}</td>
       <td class="op">
         {opCodes[cmd.op]}
       </td>
@@ -98,8 +105,7 @@
 
 <div class="info">
   <p>Status: {status}</p>
-  <p>Length: {programLength}</p>
-  <p>Max memory: {maxMemory}</p>
+  <p>Program memory: {programLength} / {maxMemory}</p>
   <p>PC: {pc}</p>
 </div>
 <pre class="error">{error}</pre>
@@ -107,7 +113,7 @@
   <pre class="output">{output}</pre>
 {:else}
   <div class="op-list">
-    {#each opCodes as op, i} <p>{i}: {op}</p> {/each}
+    {#each opCodes as op, i} <p>({i}) <span class="op">{op}</span></p> {/each}
   </div>
 {/if}
 
@@ -120,7 +126,7 @@
     border-radius: 8px;
     padding: 1em;
   }
-  .commands {
+  .loaded-commands {
     text-align: left;
     padding: 0 1em;
   }

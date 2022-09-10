@@ -41,7 +41,9 @@ export class Cpu {
     const program = Cpu.parseProgram(programText);
     this.reset();
     if (program.length > this.maxMemory)
-      return console.log('Program memory overflow');
+      throw new Error(
+        `Program memory overflow (max: ${this.maxMemory} commands)`
+      );
     for (const cmd of program) {
       if (cmd.op === undefined) {
         console.log('Error loading command ', cmd);
