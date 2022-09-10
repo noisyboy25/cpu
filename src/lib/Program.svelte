@@ -3,7 +3,7 @@
 
   import { cpu } from './stores';
 
-  let program = 'Hello world';
+  let program = 'Roses are red\nViolets are blue';
   let status;
   let counter;
   let programLength;
@@ -56,12 +56,14 @@
   }
 </script>
 
-<textarea bind:value={program} />
-<button on:click={() => step()}>Step</button>
-<button on:click={() => loadProgram(commands)}>Load</button>
-<button on:click={() => reset()}>Reset</button>
-<button on:click={() => run()}>Run</button>
-<table>
+<textarea class="input" bind:value={program} />
+<div>
+  <button on:click={() => step()}>Step</button>
+  <button on:click={() => loadProgram(commands)}>Load</button>
+  <button on:click={() => reset()}>Reset</button>
+  <button on:click={() => run()}>Run</button>
+</div>
+<table class="commands">
   {#each commands as cmd}
     <tr>
       <td class="op">
@@ -76,14 +78,23 @@
   {/each}
 </table>
 
-<div>
+<div class="info">
   <p>Count: {counter}</p>
   <p>Status: {status}</p>
   <p>Length: {programLength}</p>
 </div>
-<pre>{output}</pre>
+{#if output}
+  <pre class="output">{output}</pre>
+{/if}
 
 <style>
+  .input {
+    width: 100%;
+    min-height: 20vh;
+  }
+  .commands {
+    text-align: left;
+  }
   .op {
     color: orange;
   }
@@ -95,5 +106,18 @@
   }
   .arg::after {
     content: ']';
+  }
+  .info {
+    margin: 1em;
+    text-align: left;
+  }
+  .info p {
+    margin: 0;
+  }
+  .output {
+    background: black;
+    text-align: left;
+    padding: 1em;
+    border-radius: 8px;
   }
 </style>
