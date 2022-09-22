@@ -1,4 +1,4 @@
-export type Command = { op: number; args: number[] };
+import type { Command } from './compiler';
 
 export enum Status {
   READY = 'Ready',
@@ -6,39 +6,39 @@ export enum Status {
   DONE = 'Done',
 }
 
-export const opCodes = ['EMPTY', 'ADD', 'SUB', 'INC', 'DEC', 'AND', 'OR'];
+export type Instruction = {
+  argNumber: number;
+  call: (cpu: Cpu, args: number[]) => string;
+};
+
+export const instructions = new Map<string, Instruction>([
+  [
+    'mov',
+    {
+      argNumber: 1,
+      call: (cpu, args: number[]) => {
+        cpu.rx = args[0];
+        return '';
+      },
+    },
+  ],
+]);
 
 export class Cpu {
   readonly maxMemory = 3;
+  readonly registerCount = 2;
 
   pc = 0;
   cmem: Command[] = [];
-  dmem: number[] = [];
+  rx = 0;
+  r: number[] = new Array(this.registerCount).fill(0);
   status: Status = Status.READY;
 
-  static parseCommand(line: string, index: number): Command {
-    const words = line.split(' ').filter((w) => w);
-    const op = opCodes.indexOf(words[0].toUpperCase());
-    if (op < 0)
-      throw new Error(`Invalid op code at line (${index}): ${words[0]}`);
-    const args = words.slice(1).map((word) => Number(word));
-    if (args.length != 2)
-      throw new Error(`Invalid args length at line (${index + 1}): ${line}`);
-    console.log(op, args);
-    return { op, args };
+  constructor() {
+    if (Object.seal) Object.seal(this.r);
   }
 
-  static parseProgram(programText: string): Command[] {
-    return programText
-      .trim()
-      .split('\n')
-      .filter((el) => el)
-      .map((line, index) => Cpu.parseCommand(line, index))
-      .filter((cmd) => cmd.op > 0);
-  }
-
-  loadProgram(programText: string) {
-    const program = Cpu.parseProgram(programText);
+  loadProgram(program: Command[]) {
     this.reset();
     if (program.length > this.maxMemory)
       throw new Error(
@@ -73,26 +73,15 @@ export class Cpu {
 
   reset() {
     this.pc = 0;
+    this.r = new Array(this.registerCount).fill(0);
+    if (Object.seal) Object.seal(this.r);
     this.status = Status.READY;
   }
 
   private process(cmd: Command): string {
     let output = `${this.pc}: `;
     console.log(cmd);
-    switch (cmd.op) {
-      case opCodes.indexOf('ADD'): {
-        const args = cmd.args.filter((val) => val);
-        output += `${args[0] + args[1]}`;
-        break;
-      }
-      case opCodes.indexOf('SUB'): {
-        const args = cmd.args.filter((val) => val);
-        output += `${args[0] - args[1]}`;
-        break;
-      }
-      default:
-        break;
-    }
+    output += instructions.get(cmd.op).call(this, cmd.args);
     return output;
   }
 }

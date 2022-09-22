@@ -1,5 +1,7 @@
 <script lang="ts">
-  import { Cpu, opCodes, Status, type Command } from './cpu';
+  import { Compiler, type Command } from './compiler';
+
+  import { Status } from './cpu';
 
   import { cpu } from './stores';
 
@@ -9,6 +11,9 @@
   let programLength: number;
   let loadedProgram: Command[];
   let maxMemory: number;
+
+  let rx: number;
+  let r: number[];
 
   let output = '';
   let error = '';
@@ -21,6 +26,8 @@
     programLength = value.cmem.length;
     loadedProgram = value.cmem;
     maxMemory = value.maxMemory;
+    rx = value.rx;
+    r = value.r;
   });
 
   function step() {
@@ -34,7 +41,8 @@
     clearOutput();
     try {
       cpu.update((value) => {
-        value.loadProgram(programInput);
+        const program = Compiler.compile(programInput);
+        value.loadProgram(program);
         return value;
       });
     } catch (err) {
@@ -57,7 +65,8 @@
   function clear() {
     clearOutput();
     cpu.update((value) => {
-      value.loadProgram('');
+      const program = Compiler.compile('');
+      value.loadProgram(program);
       return value;
     });
   }
@@ -92,7 +101,7 @@
     <div class="row" class:active={status != Status.DONE && i === pc - 1}>
       <div>{i}</div>
       <div class="op">
-        {opCodes[cmd.op]}
+        {cmd.op}
       </div>
       {#each cmd.args as arg}
         <div class="arg">
@@ -107,14 +116,16 @@
   <p>Status: {status}</p>
   <p>Program memory: {programLength} / {maxMemory}</p>
   <p>PC: {pc}</p>
+  <p>RX: {String(rx).padStart(8, '0')}</p>
+  {#each r as reg, i}
+    <p>R{i}: {String(reg).padStart(8, '0')}</p>
+  {/each}
 </div>
 <pre class="error">{error}</pre>
 {#if !hint}
   <pre class="output">{output}</pre>
 {:else}
-  <div class="op-list">
-    {#each opCodes as op, i} <p>({i}) <span class="op">{op}</span></p> {/each}
-  </div>
+  <div class="op-list" />
 {/if}
 
 <style>
