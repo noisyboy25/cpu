@@ -17,7 +17,7 @@ export abstract class Compiler {
     let opCode: number;
     instructions.forEach((w, index) => {
       console.log(w);
-      if (w.name.toUpperCase() === op) {
+      if (w.name.toUpperCase() === op.toUpperCase()) {
         opCode = index;
       }
     });

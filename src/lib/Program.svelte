@@ -5,7 +5,8 @@
 
   import { cpu } from './stores';
 
-  let programInput = 'MOV 5\nADD 11';
+  let programInput =
+    'MOV 1\nMOVXR 1\nMOV 5\nMOVXR 0\nJRXZ 12\nSUB 1\nMOVXR 0\nMOVRX 1\nADD 2\nMOVXR 1\nMOVRX 0\nJMP 3\n';
   let status: Status;
   let pc: number;
   let programLength: number;
@@ -76,7 +77,7 @@
   }
 </script>
 
-<textarea class="program-input" spellcheck="false" bind:value={programInput} />
+<pre class="code" spellcheck="false" contenteditable="true">{programInput}</pre>
 <div>
   <button on:click={() => loadProgram()}>Load</button>
   <button on:click={() => run()}>Run</button>
@@ -90,36 +91,40 @@
     }}>Hint</button
   >
 </div>
-<div class="loaded-commands">
-  <div class="row head">
-    <div>#</div>
-    <div>OP</div>
-  </div>
-  {#each loadedProgram as cmd, i}
-    <div class="row" class:active={status != Status.DONE && i === pc - 1}>
-      <div>{i}</div>
-      <div class="op">
-        {cmd.toString(2).padStart(32, '0')}
+<div class="main">
+  <div>
+    <div class="loaded-commands">
+      <div class="row head">
+        <div>#</div>
+        <div>OP</div>
       </div>
+      {#each loadedProgram as cmd, i}
+        <div class="row" class:active={status != Status.DONE && i === pc - 1}>
+          <div>{i}</div>
+          <div class="op">
+            {cmd.toString(2).padStart(32, '0')}
+          </div>
+        </div>
+      {/each}
     </div>
-  {/each}
-</div>
+    <div class="info">
+      <p>Status: {status}</p>
+      <p>Program memory: {programLength} / {maxMemory}</p>
+      <p>PC: {pc}</p>
+      <p>RX: {String(rx).padStart(8, '0')}</p>
+      {#each r as reg, i}
+        <p>R{i}: {String(reg).padStart(8, '0')}</p>
+      {/each}
+    </div>
+    <pre class="error">{error}</pre>
+  </div>
 
-<div class="info">
-  <p>Status: {status}</p>
-  <p>Program memory: {programLength} / {maxMemory}</p>
-  <p>PC: {pc}</p>
-  <p>RX: {String(rx).padStart(8, '0')}</p>
-  {#each r as reg, i}
-    <p>R{i}: {String(reg).padStart(8, '0')}</p>
-  {/each}
+  {#if !hint}
+    <pre class="code output">{output}</pre>
+  {:else}
+    <div class="op-list" />
+  {/if}
 </div>
-<pre class="error">{error}</pre>
-{#if !hint}
-  <pre class="output">{output}</pre>
-{:else}
-  <div class="op-list" />
-{/if}
 
 <style>
   .active {
@@ -128,14 +133,10 @@
   .active > div {
     background-color: #333;
   }
-  .program-input {
-    min-height: 7em;
-    border-radius: 8px;
-    padding: 1em;
-  }
   .loaded-commands {
     display: grid;
     grid-template-columns: 5ch 1fr;
+    max-height: 20em;
     text-align: left;
     padding: 0 1em;
   }
@@ -148,6 +149,15 @@
   .loaded-commands div {
     display: inline-block;
     text-align: center;
+  }
+  .main {
+    display: flex;
+    flex-wrap: wrap;
+    height: 30%;
+  }
+  .main > * {
+    flex: 1;
+    height: 30%;
   }
   .op {
     color: orange;
@@ -169,14 +179,13 @@
   .error:empty {
     display: none;
   }
-  .output {
+  .code {
     margin: 0;
     background: black;
     text-align: left;
+    overflow-y: scroll;
     padding: 1em;
     border-radius: 8px;
-    overflow: scroll;
-    height: 100%;
     font-size: 14px;
   }
   .op-list {
@@ -185,6 +194,5 @@
     text-align: left;
     background-color: #333;
     border-radius: 8px;
-    height: 100%;
   }
 </style>

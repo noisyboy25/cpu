@@ -11,7 +11,7 @@ export type Instruction = {
 
 export const instructions: Array<Instruction> = Array.from([
   {
-    name: 'add',
+    name: 'ADD',
     call: (cpu: Cpu, arg: number) => {
       const out = `RX <- ${cpu.rx} + ${arg}`;
       cpu.rx += arg;
@@ -19,23 +19,54 @@ export const instructions: Array<Instruction> = Array.from([
     },
   },
   {
-    name: 'mov',
+    name: 'SUB',
+    call: (cpu: Cpu, arg: number) => {
+      const out = `RX <- ${cpu.rx} - ${arg}`;
+      cpu.rx -= arg;
+      return out;
+    },
+  },
+  {
+    name: 'MOV',
     call: (cpu: Cpu, arg: number) => {
       cpu.rx = arg;
       return `RX <- ${arg}`;
     },
   },
   {
-    name: 'jmp',
+    name: 'MOVRX',
+    call: (cpu: Cpu, arg: number) => {
+      cpu.rx = cpu.r[arg];
+      return `RX <- R[${arg}]`;
+    },
+  },
+  {
+    name: 'MOVXR',
+    call: (cpu: Cpu, arg: number) => {
+      cpu.r[arg] = cpu.rx;
+      return `RX -> R[${arg}]`;
+    },
+  },
+  {
+    name: 'JMP',
     call: (cpu: Cpu, arg: number) => {
       cpu.pc = arg;
       return `JMP ${arg}`;
     },
   },
+  {
+    name: 'JRXZ',
+    call: (cpu: Cpu, arg: number) => {
+      if (cpu.rx === 0) {
+        cpu.pc = arg;
+      }
+      return `JRXZ ${arg}`;
+    },
+  },
 ]);
 
 export class Cpu {
-  readonly maxMemory = 3;
+  readonly maxMemory = 20;
   readonly registerCount = 2;
 
   pc = 0;
