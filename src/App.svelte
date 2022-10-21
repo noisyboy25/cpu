@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Program from './lib/Program.svelte';
+  import CpuDemo from './lib/CpuDemo.svelte';
 </script>
 
-<Program />
+<CpuDemo />

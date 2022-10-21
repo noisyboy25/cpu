@@ -66,7 +66,6 @@ export const instructions: Array<Instruction> = Array.from([
 ]);
 
 export class Cpu {
-  readonly maxMemory = 20;
   readonly registerCount = 2;
 
   pc = 0;
@@ -82,10 +81,6 @@ export class Cpu {
 
   loadProgram(program: number[]) {
     this.reset();
-    if (program.length > this.maxMemory)
-      throw new Error(
-        `Program memory overflow (max: ${this.maxMemory} commands)`
-      );
     this.cMem = program;
     console.log(this);
   }

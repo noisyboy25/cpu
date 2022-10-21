@@ -1,7 +1,9 @@
 <script lang="ts">
+  import CodeBlock from './CodeBlock.svelte';
   import { Compiler } from './compiler';
 
   import { Status } from './cpu';
+  import CpuStatus from './CpuStatus.svelte';
 
   import { cpu } from './stores';
 
@@ -9,9 +11,7 @@
     'MOV 1\nMOVXR 1\nMOV 5\nMOVXR 0\nJRXZ 12\nSUB 1\nMOVXR 0\nMOVRX 1\nADD 2\nMOVXR 1\nMOVRX 0\nJMP 3\n';
   let status: Status;
   let pc: number;
-  let programLength: number;
   let loadedProgram: number[];
-  let maxMemory: number;
 
   let rx: number;
   let r: number[];
@@ -24,9 +24,7 @@
   cpu.subscribe((value) => {
     status = value.status;
     pc = value.pc;
-    programLength = value.cMem.length;
     loadedProgram = value.cMem;
-    maxMemory = value.maxMemory;
     rx = value.rx;
     r = value.r;
   });
@@ -77,7 +75,7 @@
   }
 </script>
 
-<pre class="code" spellcheck="false" contenteditable="true">{programInput}</pre>
+<CodeBlock editable text={programInput} />
 <div>
   <button on:click={() => loadProgram()}>Load</button>
   <button on:click={() => run()}>Run</button>
@@ -107,20 +105,10 @@
         </div>
       {/each}
     </div>
-    <div class="info">
-      <p>Status: {status}</p>
-      <p>Program memory: {programLength} / {maxMemory}</p>
-      <p>PC: {pc}</p>
-      <p>RX: {String(rx).padStart(8, '0')}</p>
-      {#each r as reg, i}
-        <p>R{i}: {String(reg).padStart(8, '0')}</p>
-      {/each}
-    </div>
-    <pre class="error">{error}</pre>
   </div>
-
+  <CpuStatus {status} {pc} {rx} {r} {error} />
   {#if !hint}
-    <pre class="code output">{output}</pre>
+    <CodeBlock text={output} />
   {:else}
     <div class="op-list" />
   {/if}
@@ -150,43 +138,8 @@
     display: inline-block;
     text-align: center;
   }
-  .main {
-    display: flex;
-    flex-wrap: wrap;
-    height: 30%;
-  }
-  .main > * {
-    flex: 1;
-    height: 30%;
-  }
   .op {
     color: orange;
-  }
-  .info {
-    padding: 1em;
-    text-align: left;
-  }
-  .info p {
-    margin: 0;
-  }
-  .error {
-    margin: auto;
-    background-color: firebrick;
-    padding: 1em;
-    font-weight: bold;
-    border-radius: 8px;
-  }
-  .error:empty {
-    display: none;
-  }
-  .code {
-    margin: 0;
-    background: black;
-    text-align: left;
-    overflow-y: scroll;
-    padding: 1em;
-    border-radius: 8px;
-    font-size: 14px;
   }
   .op-list {
     margin: 0;
