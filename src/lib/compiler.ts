@@ -12,16 +12,16 @@ export abstract class Compiler {
   static encodeCommand(line: string): number {
     const words = line.split(' ').filter((w) => w);
     const op = words[0].toUpperCase();
-    const literal = Number(words[1]);
-    console.log(op, literal);
-    let cmdType: number;
+    const arg = Number(words[1]);
+    console.log(op, arg);
+    let opCode: number;
     instructions.forEach((w, index) => {
       console.log(w);
       if (w.name.toUpperCase() === op) {
-        cmdType = index;
+        opCode = index;
       }
     });
-    console.log(cmdType, literal);
-    return (cmdType << 28) | (literal << 12);
+    console.log(opCode, arg);
+    return (opCode << 28) | arg;
   }
 }

@@ -6,30 +6,30 @@ export enum Status {
 
 export type Instruction = {
   name: string;
-  call: (cpu: Cpu, literal: number, args: number) => string;
+  call: (cpu: Cpu, arg: number) => string;
 };
 
 export const instructions: Array<Instruction> = Array.from([
   {
     name: 'add',
-    call: (cpu: Cpu, literal: number, arg: number) => {
-      const out = `RX <- ${cpu.rx} + ${literal}`;
-      cpu.rx += literal;
+    call: (cpu: Cpu, arg: number) => {
+      const out = `RX <- ${cpu.rx} + ${arg}`;
+      cpu.rx += arg;
       return out;
     },
   },
   {
     name: 'mov',
-    call: (cpu: Cpu, literal: number, args: number) => {
-      cpu.rx = literal;
-      return `RX <- ${literal}`;
+    call: (cpu: Cpu, arg: number) => {
+      cpu.rx = arg;
+      return `RX <- ${arg}`;
     },
   },
   {
     name: 'jmp',
-    call: (cpu: Cpu, literal: number, args: number) => {
-      cpu.pc = literal;
-      return `JMP ${literal}`;
+    call: (cpu: Cpu, arg: number) => {
+      cpu.pc = arg;
+      return `JMP ${arg}`;
     },
   },
 ]);
@@ -78,6 +78,7 @@ export class Cpu {
 
   reset() {
     this.pc = 0;
+    this.rx = 0;
     this.r = new Array(this.registerCount).fill(0);
     if (Object.seal) Object.seal(this.r);
     this.status = Status.READY;
@@ -86,10 +87,9 @@ export class Cpu {
   private process(cmd: number): string {
     let output = `${this.pc}: `;
     console.log(cmd.toString(2));
-    const cmdType = cmd >> 28;
-    const literal = (cmd >> 12) & 0xffff;
-    const arg = cmd & 0xfff;
-    output += instructions[cmdType].call(this, literal, arg);
+    const opCode = cmd >> 28;
+    const arg = cmd & 0xfffffff;
+    output += instructions[opCode].call(this, arg);
     return output;
   }
 }

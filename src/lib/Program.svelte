@@ -5,7 +5,7 @@
 
   import { cpu } from './stores';
 
-  let programInput = 'MOV 5';
+  let programInput = 'MOV 5\nADD 11';
   let status: Status;
   let pc: number;
   let programLength: number;
