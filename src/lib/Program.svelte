@@ -1,15 +1,15 @@
 <script lang="ts">
-  import { Compiler, type Command } from './compiler';
+  import { Compiler } from './compiler';
 
   import { Status } from './cpu';
 
   import { cpu } from './stores';
 
-  let programInput = 'ADD 5 6\nADD 5 -10\nSUB 10 2';
+  let programInput = 'MOV 5';
   let status: Status;
   let pc: number;
   let programLength: number;
-  let loadedProgram: Command[];
+  let loadedProgram: number[];
   let maxMemory: number;
 
   let rx: number;
@@ -23,8 +23,8 @@
   cpu.subscribe((value) => {
     status = value.status;
     pc = value.pc;
-    programLength = value.cmem.length;
-    loadedProgram = value.cmem;
+    programLength = value.cMem.length;
+    loadedProgram = value.cMem;
     maxMemory = value.maxMemory;
     rx = value.rx;
     r = value.r;
@@ -94,20 +94,13 @@
   <div class="row head">
     <div>#</div>
     <div>OP</div>
-    <div>Args</div>
-    <div />
   </div>
   {#each loadedProgram as cmd, i}
     <div class="row" class:active={status != Status.DONE && i === pc - 1}>
       <div>{i}</div>
       <div class="op">
-        {cmd.op}
+        {cmd.toString(2).padStart(32, '0')}
       </div>
-      {#each cmd.args as arg}
-        <div class="arg">
-          {arg}
-        </div>
-      {/each}
     </div>
   {/each}
 </div>
@@ -142,7 +135,7 @@
   }
   .loaded-commands {
     display: grid;
-    grid-template-columns: 5ch 5ch 1fr 1fr;
+    grid-template-columns: 5ch 1fr;
     text-align: left;
     padding: 0 1em;
   }
@@ -158,9 +151,6 @@
   }
   .op {
     color: orange;
-  }
-  .arg {
-    color: lightyellow;
   }
   .info {
     padding: 1em;

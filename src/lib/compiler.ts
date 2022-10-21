@@ -1,23 +1,27 @@
 import { instructions } from './cpu';
 
-export type Command = { op: string; args: number[] };
-
 export abstract class Compiler {
-  static compile(programText: string): Command[] {
+  static compile(programText: string): number[] {
     return programText
       .trim()
       .split('\n')
       .filter((el) => el)
-      .map((line, index) => Compiler.parseCommand(line, index));
+      .map((line) => Compiler.encodeCommand(line));
   }
 
-  static parseCommand(line: string, index: number): Command {
+  static encodeCommand(line: string): number {
     const words = line.split(' ').filter((w) => w);
     const op = words[0].toUpperCase();
-    const args = words.slice(1).map((word) => Number(word));
-    if (instructions.get(op).argNumber != args.length)
-      throw new Error('Invalid arguments length');
-    console.log(op, args);
-    return { op, args };
+    const literal = Number(words[1]);
+    console.log(op, literal);
+    let cmdType: number;
+    instructions.forEach((w, index) => {
+      console.log(w);
+      if (w.name.toUpperCase() === op) {
+        cmdType = index;
+      }
+    });
+    console.log(cmdType, literal);
+    return (cmdType << 28) | (literal << 12);
   }
 }

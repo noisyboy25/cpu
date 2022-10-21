@@ -1,5 +1,3 @@
-import type { Command } from './compiler';
-
 export enum Status {
   READY = 'Ready',
   ERROR = 'Error',
@@ -7,21 +5,33 @@ export enum Status {
 }
 
 export type Instruction = {
-  argNumber: number;
-  call: (cpu: Cpu, args: number[]) => string;
+  name: string;
+  call: (cpu: Cpu, literal: number, args: number) => string;
 };
 
-export const instructions = new Map<string, Instruction>([
-  [
-    'mov',
-    {
-      argNumber: 1,
-      call: (cpu, args: number[]) => {
-        cpu.rx = args[0];
-        return '';
-      },
+export const instructions: Array<Instruction> = Array.from([
+  {
+    name: 'add',
+    call: (cpu: Cpu, literal: number, arg: number) => {
+      const out = `RX <- ${cpu.rx} + ${literal}`;
+      cpu.rx += literal;
+      return out;
     },
-  ],
+  },
+  {
+    name: 'mov',
+    call: (cpu: Cpu, literal: number, args: number) => {
+      cpu.rx = literal;
+      return `RX <- ${literal}`;
+    },
+  },
+  {
+    name: 'jmp',
+    call: (cpu: Cpu, literal: number, args: number) => {
+      cpu.pc = literal;
+      return `JMP ${literal}`;
+    },
+  },
 ]);
 
 export class Cpu {
@@ -29,7 +39,8 @@ export class Cpu {
   readonly registerCount = 2;
 
   pc = 0;
-  cmem: Command[] = [];
+  cMem: number[] = [];
+  dMem: number[] = [];
   rx = 0;
   r: number[] = new Array(this.registerCount).fill(0);
   status: Status = Status.READY;
@@ -38,19 +49,13 @@ export class Cpu {
     if (Object.seal) Object.seal(this.r);
   }
 
-  loadProgram(program: Command[]) {
+  loadProgram(program: number[]) {
     this.reset();
     if (program.length > this.maxMemory)
       throw new Error(
         `Program memory overflow (max: ${this.maxMemory} commands)`
       );
-    for (const cmd of program) {
-      if (cmd.op === undefined) {
-        console.log('Error loading command ', cmd);
-        return;
-      }
-    }
-    this.cmem = program;
+    this.cMem = program;
     console.log(this);
   }
 
@@ -60,12 +65,12 @@ export class Cpu {
       case this.pc < 0:
         this.status = Status.ERROR;
         break;
-      case this.pc === this.cmem.length:
+      case this.pc === this.cMem.length:
         this.status = Status.DONE;
         break;
       default:
-        output = this.process(this.cmem[this.pc]);
         this.pc++;
+        output = this.process(this.cMem[this.pc - 1]);
         break;
     }
     return output;
@@ -78,10 +83,13 @@ export class Cpu {
     this.status = Status.READY;
   }
 
-  private process(cmd: Command): string {
+  private process(cmd: number): string {
     let output = `${this.pc}: `;
-    console.log(cmd);
-    output += instructions.get(cmd.op).call(this, cmd.args);
+    console.log(cmd.toString(2));
+    const cmdType = cmd >> 28;
+    const literal = (cmd >> 12) & 0xffff;
+    const arg = cmd & 0xfff;
+    output += instructions[cmdType].call(this, literal, arg);
     return output;
   }
 }
