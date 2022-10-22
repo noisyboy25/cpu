@@ -3,16 +3,20 @@
   export let editable: boolean = false;
 </script>
 
-<pre class="code" spellcheck="false" contenteditable={editable}>{text}</pre>
+<textarea class="code" spellcheck="false" contenteditable={editable}
+  >{text}</textarea
+>
 
 <style>
   .code {
-    margin: 0;
+    height: 100%;
+    width: 100%;
     background: black;
     text-align: left;
-    overflow-y: scroll;
+    overflow-y: auto;
     padding: 1em;
     border-radius: 8px;
     font-size: 14px;
+    resize: none;
   }
 </style>
