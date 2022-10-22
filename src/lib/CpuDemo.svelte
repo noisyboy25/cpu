@@ -9,7 +9,7 @@
   import { cpu } from './stores';
 
   let programInput =
-    'MOV 1\nMOVXR 1\nMOV 5\nMOVXR 0\nJRXZ 12\nSUB 1\nMOVXR 0\nMOVRX 1\nADD 2\nMOVXR 1\nMOVRX 0\nJMP 3\n';
+    'MOV 1\nMOVXR 1\nMOV 5\nMOVXR 0\nJRXZ 12\nSUB 1\nMOVXR 0\nMOVRX 1\nADD 2\nMOVXR 1\nMOVRX 0\nJMP 3';
   let status: Status;
   let pc: number;
   let program: number[];
@@ -74,8 +74,10 @@
   }
 </script>
 
-<CodeBlock editable text={programInput} />
 <div>
+  <CodeBlock editable text={programInput} />
+</div>
+<div class="button-group">
   <button on:click={() => loadProgram()}>Load</button>
   <button on:click={() => run()}>Run</button>
   <button on:click={() => step()}>Step</button>
@@ -89,4 +91,10 @@
 </div>
 
 <style>
+  div {
+    flex: 1;
+  }
+  .button-group {
+    flex: 0;
+  }
 </style>
