@@ -26,4 +26,7 @@
   .row {
     display: contents;
   }
+  .active {
+    color: orange;
+  }
 </style>
