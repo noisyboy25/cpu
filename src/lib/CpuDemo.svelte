@@ -74,27 +74,33 @@
   }
 </script>
 
-<div>
-  <CodeBlock editable text={programInput} />
-</div>
-<div class="button-group">
-  <button on:click={() => loadProgram()}>Load</button>
-  <button on:click={() => run()}>Run</button>
-  <button on:click={() => step()}>Step</button>
-  <button on:click={() => reset()}>Reset</button>
-  <button on:click={() => clear()}>Clear</button>
-</div>
 <div class="main">
+  <CodeBlock editable text={programInput} />
   <LoadedProgram {program} {pc} />
-  <CpuStatus {status} {pc} {rx} {r} {error} />
-  <CodeBlock text={output} />
+  <div>
+    <div class="button-group">
+      <button on:click={() => loadProgram()}>Load</button>
+      <button on:click={() => run()}>Run</button>
+      <button on:click={() => step()}>Step</button>
+      <button on:click={() => reset()}>Reset</button>
+      <button on:click={() => clear()}>Clear</button>
+    </div>
+    <CpuStatus {status} {pc} {rx} {r} {error} />
+  </div>
+  <CodeBlock autoscroll text={output} />
 </div>
 
 <style>
   div {
-    flex: 1;
+    flex: 1 0;
   }
   .button-group {
     flex: 0;
+  }
+  .main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 2rem;
   }
 </style>

@@ -1,16 +1,32 @@
 <script lang="ts">
+  import { afterUpdate, beforeUpdate } from 'svelte';
+
   export let text: string;
   export let editable: boolean = false;
+  export let autoscroll: boolean = false;
+  let textarea: HTMLTextAreaElement;
+
+  afterUpdate(() => {
+    if (autoscroll) textarea.scrollTop = textarea.scrollHeight;
+  });
 </script>
 
-<textarea class="code" spellcheck="false" contenteditable={editable}
-  >{text}</textarea
->
+<div>
+  <textarea
+    class="code"
+    spellcheck="false"
+    contenteditable={editable}
+    bind:this={textarea}>{text}</textarea
+  >
+</div>
 
 <style>
-  .code {
+  div {
+    display: flex;
     height: 100%;
-    width: 100%;
+    flex-direction: column;
+  }
+  .code {
     background: black;
     text-align: left;
     overflow-y: auto;
@@ -18,5 +34,6 @@
     border-radius: 8px;
     font-size: 14px;
     resize: none;
+    flex: 1;
   }
 </style>
