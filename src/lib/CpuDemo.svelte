@@ -92,11 +92,21 @@ JMP 3`;
   <LoadedProgram {program} {pc} />
   <div>
     <div class="button-group">
-      <button on:click={() => loadProgram()}>Load</button>
-      <button on:click={() => run()}>Run</button>
-      <button on:click={() => step()}>Step</button>
-      <button on:click={() => reset()}>Reset</button>
-      <button on:click={() => clear()}>Clear</button>
+      <button on:click={() => loadProgram()}
+        ><i class="fa-regular fa-square-caret-down" /> Load</button
+      >
+      <button on:click={() => run()}
+        ><i class="fa-solid fa-forward-fast" /> Run</button
+      >
+      <button on:click={() => step()}
+        ><i class="fa-solid fa-forward-step" /> Step</button
+      >
+      <button on:click={() => reset()}
+        ><i class="fa-solid fa-rotate-left" /> Reset</button
+      >
+      <button on:click={() => clear()}
+        ><i class="fa-regular fa-trash-can" /> Clear</button
+      >
     </div>
     <CpuStatus {status} {pc} {rx} {r} {error} />
   </div>
@@ -105,7 +115,9 @@ JMP 3`;
 
 <style>
   .button-group {
-    flex: 0;
+    display: flex;
+    gap: 1em;
+    flex-wrap: wrap;
   }
   .main {
     display: grid;

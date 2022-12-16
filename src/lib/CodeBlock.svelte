@@ -28,7 +28,7 @@
     flex-direction: column;
   }
   .code {
-    background: black;
+    background: #111;
     text-align: left;
     overflow-y: auto;
     padding: 1em;
