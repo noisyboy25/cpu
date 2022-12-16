@@ -21,9 +21,10 @@
 <style>
   .loaded-commands {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: auto 1fr;
     overflow-y: scroll;
     padding-right: 1em;
+    gap: 0 1em;
   }
   .row {
     display: contents;
