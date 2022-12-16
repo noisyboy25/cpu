@@ -1,7 +1,7 @@
 <script lang="ts">
   import { afterUpdate, beforeUpdate } from 'svelte';
 
-  export let text: string;
+  export let value: string;
   export let editable: boolean = false;
   export let autoscroll: boolean = false;
   let textarea: HTMLTextAreaElement;
@@ -16,8 +16,9 @@
     class="code"
     spellcheck="false"
     contenteditable={editable}
-    bind:this={textarea}>{text}</textarea
-  >
+    bind:this={textarea}
+    bind:value
+  />
 </div>
 
 <style>
