@@ -8,8 +8,19 @@
 
   import { cpu } from './stores';
 
-  let programInput =
-    'MOV 1\nMOVXR 1\nMOV 5\nMOVXR 0\nJRXZ 12\nSUB 1\nMOVXR 0\nMOVRX 1\nADD 2\nMOVXR 1\nMOVRX 0\nJMP 3';
+  let programInput = String.raw`MOV 1
+MOVXR 1
+MOV 5
+MOVXR 0
+JRXZ 12
+SUB 1
+MOVXR 0
+MOVRX 1
+ADD 2
+MOVXR 1
+MOVRX 0
+JMP 3`;
+
   let status: Status;
   let pc: number;
   let program: number[];
@@ -93,9 +104,6 @@
 </div>
 
 <style>
-  div {
-    flex: 1 0;
-  }
   .button-group {
     flex: 0;
   }
@@ -104,5 +112,6 @@
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
     gap: 2rem;
+    height: 100%;
   }
 </style>

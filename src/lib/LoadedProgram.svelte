@@ -4,9 +4,9 @@
 </script>
 
 <div class="loaded-commands">
-  <div class="row head">
-    <div>#</div>
-    <div>OP</div>
+  <div class="row ">
+    <div class="head">#</div>
+    <div class="head">OP</div>
   </div>
   {#each program as cmd, i}
     <div class="row" class:active={i === pc - 1}>
@@ -22,11 +22,19 @@
   .loaded-commands {
     display: grid;
     grid-template-columns: 1fr 1fr;
+    overflow-y: scroll;
+    padding-right: 1em;
   }
   .row {
     display: contents;
   }
   .active {
-    color: orange;
+    color: var(--fg-active);
+  }
+  .head {
+    position: sticky;
+    top: 0;
+    right: -1em;
+    background: var(--bg-color);
   }
 </style>
