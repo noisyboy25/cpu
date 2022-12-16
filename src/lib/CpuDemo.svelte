@@ -39,8 +39,10 @@
     clearOutput();
     try {
       cpu.update((value) => {
-        const program = Compiler.compile(programInput);
-        value.loadProgram(program);
+        const compiledProgram = Compiler.compile(programInput);
+        console.log(compiledProgram);
+
+        value.loadProgram(compiledProgram);
         return value;
       });
     } catch (err) {
@@ -75,7 +77,7 @@
 </script>
 
 <div class="main">
-  <CodeBlock editable text={programInput} />
+  <CodeBlock editable bind:value={programInput} />
   <LoadedProgram {program} {pc} />
   <div>
     <div class="button-group">
@@ -87,7 +89,7 @@
     </div>
     <CpuStatus {status} {pc} {rx} {r} {error} />
   </div>
-  <CodeBlock autoscroll text={output} />
+  <CodeBlock autoscroll bind:value={output} />
 </div>
 
 <style>
