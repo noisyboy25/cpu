@@ -11,6 +11,12 @@ export type Instruction = {
 
 export const instructions: Array<Instruction> = Array.from([
   {
+    name: 'NOP',
+    call: () => {
+      return 'NOP';
+    },
+  },
+  {
     name: 'ADD',
     call: (cpu: Cpu, arg: number) => {
       const out = `RX <- ${cpu.rx} + ${arg}`;
