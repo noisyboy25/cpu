@@ -8,5 +8,5 @@ Deployed on Render: https://cpu-demo.onrender.com/
 
 ```bash
 yarn
-yarn dev -- --open
+yarn dev --open
 ```
