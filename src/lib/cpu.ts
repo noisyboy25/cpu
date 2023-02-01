@@ -119,8 +119,8 @@ export class Cpu {
   private process(cmd: number): string {
     let output = `${this.pc}: `;
     console.log(cmd.toString(2));
-    const opCode = cmd >> 28;
-    const arg = cmd & 0xfffffff;
+    const opCode = cmd >> 27;
+    const arg = cmd & 0x7ffffff;
     output += instructions[opCode].call(this, arg);
     return output;
   }

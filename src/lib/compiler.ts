@@ -22,6 +22,6 @@ export abstract class Compiler {
       }
     });
     console.log(opCode, arg);
-    return (opCode << 28) | arg;
+    return (opCode << 27) | arg;
   }
 }
