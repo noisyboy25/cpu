@@ -19,27 +19,16 @@ MOVXR 1
 MOVRX 0
 JMP 3`;
 
-  let pc: number;
-  let program: number[];
-
-  let rx: number;
-  let r: number[];
-
   let output = '';
   let error = '';
 
-  cpu.subscribe((value) => {
-    pc = value.pc;
-    program = value.cMem;
-    rx = value.rx;
-    r = value.r;
-  });
+  $: ({ pc, cMem } = $cpu);
 </script>
 
 <div class="main">
   <CodeBlock editable bind:value={programInput} />
   <CpuControls {programInput} bind:output bind:error />
-  <LoadedProgram {program} {pc} />
+  <LoadedProgram program={cMem} {pc} />
   <CodeBlock autoscroll bind:value={output} />
 </div>
 
