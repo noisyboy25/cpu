@@ -93,6 +93,7 @@ export class Cpu {
 
   step(): string {
     let output = '';
+    if (this.status !== Status.READY) return output;
     switch (true) {
       case this.pc < 0:
         this.status = Status.ERROR;
