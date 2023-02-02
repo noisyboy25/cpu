@@ -9,20 +9,7 @@
   export let output: string;
   export let error: string;
 
-  let status: Status;
-  let pc: number;
-  let program: number[];
-
-  let rx: number;
-  let r: number[];
-
-  cpu.subscribe((value) => {
-    status = value.status;
-    pc = value.pc;
-    program = value.cMem;
-    rx = value.rx;
-    r = value.r;
-  });
+  $: ({ status, pc, rx, r } = $cpu);
 
   function step() {
     cpu.update((value) => {
@@ -54,9 +41,9 @@
     });
   }
   function run() {
-    while (status === Status.READY) {
-      step();
-    }
+    if (status != Status.READY) return;
+    step();
+    run();
   }
   function clear() {
     clearOutput();
