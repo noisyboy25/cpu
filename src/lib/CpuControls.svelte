@@ -12,22 +12,18 @@
   $: ({ status, pc, rx, r } = $cpu);
 
   function step() {
-    cpu.update((value) => {
-      const out = value.step();
-      if (out) output += `${out}\n`;
-      return value;
-    });
+    const out = cpu.step();
+    ({ status } = $cpu);
+    if (out) output += `${out}\n`;
   }
+
   function loadProgram() {
     clearOutput();
     try {
-      cpu.update((value) => {
-        const compiledProgram = Compiler.compile(programInput);
-        console.log(compiledProgram);
+      const compiledProgram = Compiler.compile(programInput);
+      console.log(compiledProgram);
 
-        value.loadProgram(compiledProgram);
-        return value;
-      });
+      cpu.load(compiledProgram);
     } catch (err) {
       console.log(err);
       error = err;
@@ -35,23 +31,15 @@
   }
   function reset() {
     clearOutput();
-    cpu.update((value) => {
-      value.reset();
-      return value;
-    });
+    cpu.reset();
   }
   function run() {
-    if (status != Status.READY) return;
-    step();
-    run();
+    while (status === Status.READY) step();
   }
   function clear() {
     clearOutput();
-    cpu.update((value) => {
-      const program = Compiler.compile('');
-      value.loadProgram(program);
-      return value;
-    });
+    const program = Compiler.compile('');
+    cpu.load(program);
   }
   function clearOutput() {
     output = '';
