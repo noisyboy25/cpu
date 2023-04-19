@@ -6,9 +6,9 @@
 
   import { cpu } from './stores';
 
-  import examples from '../assets/examples.json';
+  import examples from '../assets/examples';
 
-  let programInput = examples['counter'];
+  let programInput = examples.max;
 
   let output = '';
   let error = '';

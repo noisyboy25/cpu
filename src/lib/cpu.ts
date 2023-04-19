@@ -54,6 +54,34 @@ export const instructions: Array<Instruction> = Array.from([
     },
   },
   {
+    name: 'MOVMX',
+    call: (cpu: Cpu, arg: number) => {
+      cpu.rx = cpu.dMem[arg];
+      return `RX <- M[${arg}]`;
+    },
+  },
+  {
+    name: 'MOVXM',
+    call: (cpu: Cpu, arg: number) => {
+      cpu.dMem[arg] = cpu.rx;
+      return `RX -> M[${arg}]`;
+    },
+  },
+  {
+    name: 'MOVMXR',
+    call: (cpu: Cpu, arg: number) => {
+      cpu.rx = cpu.dMem[cpu.r[arg]];
+      return `RX <- M[${cpu.r[arg]}]`;
+    },
+  },
+  {
+    name: 'MOVXMR',
+    call: (cpu: Cpu, arg: number) => {
+      cpu.dMem[cpu.r[arg]] = cpu.rx;
+      return `RX -> M[${cpu.r[arg]}]`;
+    },
+  },
+  {
     name: 'JMP',
     call: (cpu: Cpu, arg: number) => {
       cpu.pc = arg;
@@ -63,10 +91,34 @@ export const instructions: Array<Instruction> = Array.from([
   {
     name: 'JRXZ',
     call: (cpu: Cpu, arg: number) => {
-      if (cpu.rx === 0) {
+      if (cpu.ez !== 0) {
         cpu.pc = arg;
       }
       return `JRXZ ${arg}`;
+    },
+  },
+  {
+    name: 'JRXNZ',
+    call: (cpu: Cpu, arg: number) => {
+      if (cpu.ez === 0) {
+        cpu.pc = arg;
+      }
+      return `JRX ${arg}`;
+    },
+  },
+  {
+    name: 'GRTR',
+    call: (cpu: Cpu, arg: number) => {
+      const out = `RX <- (RX > R${arg}) ${cpu.rx} > ${cpu.r[arg]}`;
+      cpu.rx = cpu.rx > cpu.r[arg] ? 1 : 0;
+      return out;
+    },
+  },
+  {
+    name: 'EQUR',
+    call: (cpu: Cpu, arg: number) => {
+      cpu.rx = cpu.rx === cpu.r[arg] ? 1 : 0;
+      return `RX <- (RX == R${arg})`;
     },
   },
 ]);
@@ -78,6 +130,7 @@ export class Cpu {
   cMem: number[] = [];
   dMem: number[] = [];
   rx = 0;
+  ez = 0;
   r: number[] = new Array(this.registerCount).fill(0);
   status: Status = Status.READY;
 
@@ -113,6 +166,8 @@ export class Cpu {
     this.pc = 0;
     this.rx = 0;
     this.r = new Array(this.registerCount).fill(0);
+    this.ez = 0;
+    this.dMem = [];
     if (Object.seal) Object.seal(this.r);
     this.status = Status.READY;
   }
@@ -123,6 +178,7 @@ export class Cpu {
     const opCode = cmd >> 27;
     const arg = cmd & 0x7ffffff;
     output += instructions[opCode].call(this, arg);
+    this.ez = this.rx === 0 ? 1 : 0;
     return output;
   }
 }

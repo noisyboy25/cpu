@@ -1,0 +1,38 @@
+const examples = {
+  counter: String.raw`MOV 1
+MOVXR 1
+MOV 5
+MOVXR 0
+JRXZ 12
+SUB 1
+MOVXR 0
+MOVRX 1
+ADD 2
+MOVXR 1
+MOVRX 0
+JMP 3
+  `,
+  max: String.raw`MOV 5
+MOVXM 0
+MOVXR 0
+MOV 32
+MOVXM 1
+MOV 4
+MOVXM 2
+MOV 21
+MOVXM 3
+MOV 97
+MOVXM 4
+MOV 51
+MOVXM 5
+
+MOVXR 1
+MOVMXR 0
+SUB 1
+MOVXM 0
+MOVMXR 0
+GRTR 1
+`,
+};
+
+export default examples;

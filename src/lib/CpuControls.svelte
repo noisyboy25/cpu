@@ -9,7 +9,7 @@
   export let output: string;
   export let error: string;
 
-  $: ({ status, pc, rx, r } = $cpu);
+  $: ({ status, pc, rx, r, ez, dMem } = $cpu);
 
   function step() {
     const out = cpu.step();
@@ -47,7 +47,7 @@
   }
 </script>
 
-<div>
+<div class="container">
   <div class="button-group">
     <button on:click={() => loadProgram()}
       ><i class="fa-regular fa-square-caret-down" /> Load</button
@@ -65,10 +65,16 @@
       ><i class="fa-regular fa-trash-can" /> Clear</button
     >
   </div>
-  <CpuStatus {status} {pc} {rx} {r} {error} />
+  <CpuStatus {status} {pc} {rx} {r} {ez} {dMem} {error} />
 </div>
 
 <style>
+  .container {
+    min-height: 0;
+    display: grid;
+    gap: 1em;
+    grid-template-rows: 1fr 60% 1fr;
+  }
   .button-group {
     display: flex;
     gap: 1em;
