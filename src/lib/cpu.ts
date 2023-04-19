@@ -103,7 +103,7 @@ export const instructions: Array<Instruction> = Array.from([
       if (cpu.ez === 0) {
         cpu.pc = arg;
       }
-      return `JRX ${arg}`;
+      return `JRXNZ ${arg}`;
     },
   },
   {
@@ -124,7 +124,7 @@ export const instructions: Array<Instruction> = Array.from([
 ]);
 
 export class Cpu {
-  readonly registerCount = 2;
+  readonly registerCount = 3;
 
   pc = 0;
   cMem: number[] = [];
