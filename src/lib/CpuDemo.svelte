@@ -6,18 +6,9 @@
 
   import { cpu } from './stores';
 
-  let programInput = String.raw`MOV 1
-MOVXR 1
-MOV 5
-MOVXR 0
-JRXZ 12
-SUB 1
-MOVXR 0
-MOVRX 1
-ADD 2
-MOVXR 1
-MOVRX 0
-JMP 3`;
+  import examples from '../assets/examples.json';
+
+  let programInput = examples['counter'];
 
   let pc: number;
   let program: number[];
